@@ -138,6 +138,7 @@ function Hero(props) {
 
         XLSX.writeFile(wb, 'attendance.xlsx');
     };
+
     const handleSelectAllPresent = () => {
         const updatedAttendanceData = { ...attendanceData };
 
@@ -145,6 +146,32 @@ function Hero(props) {
             const formattedDate = dayjs(dateString).format('dddd, M/D/YYYY'); // Format the date
             const dateObj = updatedAttendanceData[formattedDate] || {};
             dateObj[index] = 'present'; // Set 'present' status for the user
+            updatedAttendanceData[formattedDate] = dateObj;
+        });
+
+        setAttendanceData(updatedAttendanceData);
+    };
+
+    const handleSelectAllAbsent = () => {
+        const updatedAttendanceData = { ...attendanceData };
+
+        selected.forEach((dateString, index) => {
+            const formattedDate = dayjs(dateString).format('dddd, M/D/YYYY'); // Format the date
+            const dateObj = updatedAttendanceData[formattedDate] || {};
+            dateObj[index] = 'absent'; // Set 'present' status for the user
+            updatedAttendanceData[formattedDate] = dateObj;
+        });
+
+        setAttendanceData(updatedAttendanceData);
+    };
+
+    const handleSelectAllHoliday = () => {
+        const updatedAttendanceData = { ...attendanceData };
+
+        selected.forEach((dateString, index) => {
+            const formattedDate = dayjs(dateString).format('dddd, M/D/YYYY'); // Format the date
+            const dateObj = updatedAttendanceData[formattedDate] || {};
+            dateObj[index] = 'holiday'; // Set 'present' status for the user
             updatedAttendanceData[formattedDate] = dateObj;
         });
 
@@ -299,6 +326,12 @@ function Hero(props) {
                                     <th className='text-center'>Date</th>
                                     <th><Checkbox onClick={async () => handleSelectAllPresent()} />
                                         Select All Present
+                                        {"  "}
+                                        <Checkbox onClick={async () => handleSelectAllAbsent()} />
+                                        Select All Absent
+                                        {"  "}
+                                        <Checkbox onClick={async () => handleSelectAllHoliday()} />
+                                        Select All Holiday
                                     </th>
                                     <th className='text-center'>Action</th>
                                 </tr>
