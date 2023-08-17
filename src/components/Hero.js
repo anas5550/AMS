@@ -79,13 +79,17 @@ function Hero(props) {
         const wb = XLSX.utils.book_new();
         const attendanceDataArray = Object.keys(attendanceData).map((dateKey, idx) => {
             const date = dateKey;
+            const parts = date.split(', ');
+
+            const dayOfWeek = parts[0];
+            const myDate = parts[1];
             const attendanceValue = attendanceData[dateKey][idx]; // Assuming '0' is the user ID
             return {
-                date,
+                myDate,
+                dayOfWeek,
                 attendanceValue,
             };
         });
-
         const ws = XLSX.utils.json_to_sheet(attendanceDataArray);
         XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
 
