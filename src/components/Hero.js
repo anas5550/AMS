@@ -3,21 +3,22 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Group } from '@mantine/core';
 import { Calendar } from '@mantine/dates';
-import { Button, Indicator, RingProgress, Text, Chip, Radio, Table } from '@mantine/core';
+import { Button, RingProgress, Text, Chip, Radio, Table } from '@mantine/core';
 import * as XLSX from 'xlsx';
 import prismColors from '../constant';
+import { Link } from "react-router-dom";
 
 function Hero(props) {
 
     const [selected, setSelected] = useState([]);
-    const [presentDays, setPresentDays] = useState([]);
-    const [absentDays, setAbsentDays] = useState([]);
-    const [selectedOption, setSelectedOption] = useState(null);
+    // const [presentDays, setPresentDays] = useState([]);
+    // const [absentDays, setAbsentDays] = useState([]);
+    // const [selectedOption, setSelectedOption] = useState(null);
     const [attendanceData, setAttendanceData] = useState({}); // Use an object to store attendance data
     const [presentCount, setPresentCount] = useState(0);
     const [absentCount, setAbsentCount] = useState(0);
     const [holidayCount, setHolidayCount] = useState(0);
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     const handleSelect = (date) => {
         const isSelected = selected.some((s) => dayjs(date).isSame(s, 'date'));
@@ -160,17 +161,13 @@ function Hero(props) {
                     Holiday
                 </td>
 
-            </tr >
+            </tr>
         );
     })
 
     return (
         <div className='container' style={{ height: "100vh" }}>
             <div className='d-flex justify-content-between align-items-start'>
-
-
-
-
                 <div position="center">
                     <Calendar
                         style={{ color: "white", background: prismColors.comment }}
@@ -207,6 +204,11 @@ function Hero(props) {
                         <Button variant="outline" className='mx-2' onClick={async () => handleExport(attendanceData)}>
                             Download
                         </Button>
+                        <Link to="/AMS/how-to-use">
+                            <Button variant="outline"  >
+                                How to use
+                            </Button>
+                        </Link>
                     </div>
 
                     <div className='d-flex justify-content-between align-items-center mt-2 mb-4'>
