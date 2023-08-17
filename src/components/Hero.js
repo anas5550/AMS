@@ -222,7 +222,7 @@ const ClearAttendanc=()=>{
                         <Button variant="outline" className='mx-2' onClick={async () => handleExport(attendanceData)}>
                             Download
                         </Button>
-                        <Button variant="outline" className='mx-2' onClick={async () => ClearAttendanc()}>
+                        <Button variant="outline" color="red" className='mx-2' onClick={async () => ClearAttendanc()}>
                             Clear 
                         </Button>
                         <Link to="/AMS/how-to-use">
