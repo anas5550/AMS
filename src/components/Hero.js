@@ -75,12 +75,11 @@ function Hero(props) {
 
 
     const handleExport = () => {
-        // console.log('export fxn:', attendanceData);
         const wb = XLSX.utils.book_new();
         const attendanceDataArray = Object.keys(attendanceData).map((dateKey, idx) => {
             const date = dateKey;
             const parts = date.split(', ');
-
+    
             const dayOfWeek = parts[0];
             const myDate = parts[1];
             const attendanceValue = attendanceData[dateKey][idx]; // Assuming '0' is the user ID
@@ -90,12 +89,26 @@ function Hero(props) {
                 attendanceValue,
             };
         });
+        attendanceDataArray.map(function (obj) {
+     
+            // Assign new key
+            obj['Date'] = obj['myDate'];
+            obj['Week'] = obj['dayOfWeek'];
+            obj['Attendance'] = obj['attendanceValue'];
+            // Delete old key
+            delete obj['myDate'];
+            delete obj['attendanceValue'];
+            delete obj['dayOfWeek'];
+            return obj;
+        });
+        console.log(attendanceDataArray); // Add this line before creating the worksheet
+
         const ws = XLSX.utils.json_to_sheet(attendanceDataArray);
         XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
-
+    
         XLSX.writeFile(wb, 'attendance.xlsx');
-
     };
+    
 
 
 
