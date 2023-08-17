@@ -39,12 +39,10 @@ function Hero(props) {
 
     };
 
-
     useEffect(() => {
         console.log(attendanceData)
         countAttendance();
     }, [attendanceData])
-
 
     const handleAttendanceChange = (userId, date, status) => {
         setAttendanceData(prevData => ({
@@ -113,7 +111,10 @@ function Hero(props) {
 
 
 
-
+const ClearAttendanc=()=>{
+    setAttendanceData({})
+    setSelected([])
+}
 
     const countAttendance = () => {
         let pc = 0;
@@ -220,6 +221,9 @@ function Hero(props) {
                         <Chip className='mx-2' variant="filled" checked>total holiday: {holidayCount}</Chip>
                         <Button variant="outline" className='mx-2' onClick={async () => handleExport(attendanceData)}>
                             Download
+                        </Button>
+                        <Button variant="outline" className='mx-2' onClick={async () => ClearAttendanc()}>
+                            Clear 
                         </Button>
                         <Link to="/AMS/how-to-use">
                             <Button variant="outline"  >
