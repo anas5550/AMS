@@ -42,34 +42,34 @@ function Hero(props) {
     //     const currentDate = dayjs(); // Get the current date
     //     const firstDayOfMonth = currentDate.startOf('month');
     //     const lastDayOfMonth = currentDate.endOf('month');
-        
+
     //     const selectedDates = [];
     //     let currentDatePointer = firstDayOfMonth;
-        
+
     //     while (currentDatePointer.isBefore(lastDayOfMonth) || currentDatePointer.isSame(lastDayOfMonth, 'day')) {
     //         selectedDates.push(currentDatePointer.toDate());
     //         currentDatePointer = currentDatePointer.add(1, 'day');
     //     }
-        
+
     //     setSelected(selectedDates);
     // };
     const handleSelectAll = () => {
         const currentDate = dayjs(); // Get the current date
         const firstDayOfMonth = currentDate.startOf('month');
         const lastDayOfMonth = currentDate.endOf('month');
-        
+
         const selectedDates = [];
         let currentDatePointer = firstDayOfMonth;
-        
+
         while (currentDatePointer.isBefore(lastDayOfMonth) || currentDatePointer.isSame(lastDayOfMonth, 'day')) {
             selectedDates.push(currentDatePointer.toDate());
             currentDatePointer = currentDatePointer.add(1, 'day');
         }
-        
+
         setSelected(selectedDates);
     };
-    
-    
+
+
 
     useEffect(() => {
         console.log(attendanceData)
@@ -109,7 +109,7 @@ function Hero(props) {
         const attendanceDataArray = Object.keys(attendanceData).map((dateKey, idx) => {
             const date = dateKey;
             const parts = date.split(', ');
-    
+
             const dayOfWeek = parts[0];
             const myDate = parts[1];
             const attendanceValue = attendanceData[dateKey][idx]; // Assuming '0' is the user ID
@@ -120,7 +120,7 @@ function Hero(props) {
             };
         });
         attendanceDataArray.map(function (obj) {
-     
+
             // Assign new key
             obj['Date'] = obj['myDate'];
             obj['Week'] = obj['dayOfWeek'];
@@ -135,18 +135,18 @@ function Hero(props) {
 
         const ws = XLSX.utils.json_to_sheet(attendanceDataArray);
         XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
-    
+
         XLSX.writeFile(wb, 'attendance.xlsx');
     };
-    
 
 
 
 
-const ClearAttendanc=()=>{
-    setAttendanceData({})
-    setSelected([])
-}
+
+    const ClearAttendanc = () => {
+        setAttendanceData({})
+        setSelected([])
+    }
 
     const countAttendance = () => {
         let pc = 0;
@@ -255,10 +255,9 @@ const ClearAttendanc=()=>{
                             Download
                         </Button>
                         <Button variant="outline" color="red" className='mx-2' onClick={async () => handleSelectAll()}>
-                        handleSelectAll 
-                        </Button>
+                            Full Month Attendance</Button>
                         <Button variant="outline" color="red" className='mx-2' onClick={async () => ClearAttendanc()}>
-                            Clear 
+                            Clear
                         </Button>
                         <Link to="/AMS/how-to-use">
                             <Button variant="outline"  >
