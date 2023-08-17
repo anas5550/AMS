@@ -33,11 +33,43 @@ function Hero(props) {
                 delete updatedAttendanceData[date];
                 setAttendanceData(updatedAttendanceData);
             }
-
             return updatedSelected;
         });
 
     };
+
+    // const handleSelectAll = () => {
+    //     const currentDate = dayjs(); // Get the current date
+    //     const firstDayOfMonth = currentDate.startOf('month');
+    //     const lastDayOfMonth = currentDate.endOf('month');
+        
+    //     const selectedDates = [];
+    //     let currentDatePointer = firstDayOfMonth;
+        
+    //     while (currentDatePointer.isBefore(lastDayOfMonth) || currentDatePointer.isSame(lastDayOfMonth, 'day')) {
+    //         selectedDates.push(currentDatePointer.toDate());
+    //         currentDatePointer = currentDatePointer.add(1, 'day');
+    //     }
+        
+    //     setSelected(selectedDates);
+    // };
+    const handleSelectAll = () => {
+        const currentDate = dayjs(); // Get the current date
+        const firstDayOfMonth = currentDate.startOf('month');
+        const lastDayOfMonth = currentDate.endOf('month');
+        
+        const selectedDates = [];
+        let currentDatePointer = firstDayOfMonth;
+        
+        while (currentDatePointer.isBefore(lastDayOfMonth) || currentDatePointer.isSame(lastDayOfMonth, 'day')) {
+            selectedDates.push(currentDatePointer.toDate());
+            currentDatePointer = currentDatePointer.add(1, 'day');
+        }
+        
+        setSelected(selectedDates);
+    };
+    
+    
 
     useEffect(() => {
         console.log(attendanceData)
@@ -221,6 +253,9 @@ const ClearAttendanc=()=>{
                         <Chip className='mx-2' variant="filled" checked>total holiday: {holidayCount}</Chip>
                         <Button variant="outline" className='mx-2' onClick={async () => handleExport(attendanceData)}>
                             Download
+                        </Button>
+                        <Button variant="outline" color="red" className='mx-2' onClick={async () => handleSelectAll()}>
+                        handleSelectAll 
                         </Button>
                         <Button variant="outline" color="red" className='mx-2' onClick={async () => ClearAttendanc()}>
                             Clear 
