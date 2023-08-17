@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { Group } from '@mantine/core';
+import { Checkbox, Group } from '@mantine/core';
 import { Calendar } from '@mantine/dates';
 import { Button, RingProgress, Text, Chip, Radio, Table } from '@mantine/core';
 import * as XLSX from 'xlsx';
@@ -138,8 +138,31 @@ function Hero(props) {
 
         XLSX.writeFile(wb, 'attendance.xlsx');
     };
+    const handleSelectAllPresent = () => {
+        const updatedAttendanceData = { ...attendanceData };
 
+        selected.forEach((dateString, index) => {
+            const formattedDate = dayjs(dateString).format('dddd, M/D/YYYY'); // Format the date
+            const dateObj = updatedAttendanceData[formattedDate] || {};
+            dateObj[index] = 'present'; // Set 'present' status for the user
+            updatedAttendanceData[formattedDate] = dateObj;
+        });
 
+        setAttendanceData(updatedAttendanceData);
+    };
+
+    // const handleSelectAllPresent = () => {
+    //     const updatedAttendanceData = { ...attendanceData };
+    //     selected.forEach((dateString) => {
+    //         const formattedDate = dayjs(dateString).format('YYYY-MM-DD');
+    //         if (!updatedAttendanceData[formattedDate]) {
+    //             updatedAttendanceData[formattedDate] = {};
+    //         }
+    //         updatedAttendanceData[formattedDate] = 'present'; // Set 'present' status for the date
+    //     });
+
+    //     setAttendanceData(updatedAttendanceData);
+    // };
 
 
 
@@ -256,9 +279,12 @@ function Hero(props) {
                         </Button>
                         <Button variant="outline" color="red" className='mx-2' onClick={async () => handleSelectAll()}>
                             Full Month Attendance</Button>
-                        <Button variant="outline" color="red" className='mx-2' onClick={async () => ClearAttendanc()}>
+                        <Button variant="outline" color="red" className='mx-2'
+                            onClick={async () => ClearAttendanc()}
+                        >
                             Clear
                         </Button>
+
                         <Link to="/AMS/how-to-use">
                             <Button variant="outline"  >
                                 How to use
@@ -271,6 +297,9 @@ function Hero(props) {
                             <thead >
                                 <tr>
                                     <th className='text-center'>Date</th>
+                                    <th><Checkbox onClick={async () => handleSelectAllPresent()} />
+                                        Select All Present
+                                    </th>
                                     <th className='text-center'>Action</th>
                                 </tr>
                             </thead>
