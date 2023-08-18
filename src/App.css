@@ -1,0 +1,10 @@
+@media screen and (max-width: 480px) {
+    #logo, #head_easy_free_safe {
+        font-size: 15px;
+        text-align: center;
+    }
+
+    #head_easy_free_safe {
+        display: none;
+    }
+}

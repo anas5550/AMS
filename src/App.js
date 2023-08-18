@@ -10,7 +10,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
-    <div style={{ background: prismColors.bg, color: "white", height: "100vh", overflowX: "hidden" }}>
+    <div style={{ background: prismColors.bg, color: "white" }}>
       <Header />
       <BrowserRouter>
         <Routes>

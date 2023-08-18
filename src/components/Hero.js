@@ -7,18 +7,26 @@ import { Button, RingProgress, Text, Chip, Radio, Table } from '@mantine/core';
 import * as XLSX from 'xlsx';
 import prismColors from '../constant';
 import { Link } from "react-router-dom";
+import { Badge } from '@mantine/core';
+import { Menu } from '@mantine/core';
+import { IconInfoCircle, IconClick, IconDownload, IconTrash } from '@tabler/icons-react';
+
 
 function Hero(props) {
 
     const [selected, setSelected] = useState([]);
-    // const [presentDays, setPresentDays] = useState([]);
-    // const [absentDays, setAbsentDays] = useState([]);
-    // const [selectedOption, setSelectedOption] = useState(null);
-    const [attendanceData, setAttendanceData] = useState({}); // Use an object to store attendance data
+    const [attendanceData, setAttendanceData] = useState({}); // object to store attendance data
     const [presentCount, setPresentCount] = useState(0);
     const [absentCount, setAbsentCount] = useState(0);
     const [holidayCount, setHolidayCount] = useState(0);
     // const [loading, setLoading] = useState(false);
+
+
+    useEffect(() => {
+        // console.log(attendanceData)
+        countAttendance();
+    }, [attendanceData])
+
 
     const handleSelect = (date) => {
         const isSelected = selected.some((s) => dayjs(date).isSame(s, 'date'));
@@ -38,21 +46,6 @@ function Hero(props) {
 
     };
 
-    // const handleSelectAll = () => {
-    //     const currentDate = dayjs(); // Get the current date
-    //     const firstDayOfMonth = currentDate.startOf('month');
-    //     const lastDayOfMonth = currentDate.endOf('month');
-
-    //     const selectedDates = [];
-    //     let currentDatePointer = firstDayOfMonth;
-
-    //     while (currentDatePointer.isBefore(lastDayOfMonth) || currentDatePointer.isSame(lastDayOfMonth, 'day')) {
-    //         selectedDates.push(currentDatePointer.toDate());
-    //         currentDatePointer = currentDatePointer.add(1, 'day');
-    //     }
-
-    //     setSelected(selectedDates);
-    // };
     const handleSelectAll = () => {
         const currentDate = dayjs(); // Get the current date
         const firstDayOfMonth = currentDate.startOf('month');
@@ -69,13 +62,6 @@ function Hero(props) {
         setSelected(selectedDates);
     };
 
-
-
-    useEffect(() => {
-        console.log(attendanceData)
-        countAttendance();
-    }, [attendanceData])
-
     const handleAttendanceChange = (userId, date, status) => {
         setAttendanceData(prevData => ({
             ...prevData,
@@ -86,25 +72,13 @@ function Hero(props) {
         }));
     };
 
-    // const handleExport = async (data) => {
-    //     const wb = XLSX.utils.book_new();
-    //     const attendanceDataArray = await Object.keys(data).map((dateKey, idx) => {
-    //         const date = dateKey;
-    //         const attendanceValue = data[dateKey][idx];
-    //         return {
-    //             Date: date,
-    //             Attendance: attendanceValue,
-    //         };
-    //     });
-
-    //     const ws = XLSX.utils.json_to_sheet(attendanceDataArray);
-    //     XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
-
-    //     XLSX.writeFile(wb, 'attendance.xlsx');
-    // };
-
-
     const handleExport = () => {
+
+        if (attendanceData?.length === 0) {
+            alert("No data");
+            return;
+        }
+
         const wb = XLSX.utils.book_new();
         const attendanceDataArray = Object.keys(attendanceData).map((dateKey, idx) => {
             const date = dateKey;
@@ -123,7 +97,7 @@ function Hero(props) {
 
             // Assign new key
             obj['Date'] = obj['myDate'];
-            obj['Week'] = obj['dayOfWeek'];
+            obj['Day'] = obj['dayOfWeek'];
             obj['Attendance'] = obj['attendanceValue'];
             // Delete old key
             delete obj['myDate'];
@@ -131,7 +105,7 @@ function Hero(props) {
             delete obj['dayOfWeek'];
             return obj;
         });
-        console.log(attendanceDataArray); // Add this line before creating the worksheet
+        // console.log(attendanceDataArray); // Add this line before creating the worksheet
 
         const ws = XLSX.utils.json_to_sheet(attendanceDataArray);
         XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
@@ -266,73 +240,104 @@ function Hero(props) {
     })
 
     return (
-        <div className='container' style={{ height: "100vh" }}>
-            <div className='d-flex justify-content-between align-items-start'>
-                <div position="center">
-                    <Calendar
-                        style={{ color: "white", background: prismColors.comment }}
-                        getDayProps={(date) => ({
-                            selected: selected.some((s) => dayjs(date).isSame(s, 'date')),
-                            onClick: () => handleSelect(date),
-                        })}
-                    />
-                    <Group position="center">
-                        <RingProgress
-                            size={170}
-                            thickness={16}
-                            label={
-                                <Text size="xs" align="center" px="xs" sx={{ pointerEvents: 'none' }}>
-                                    Hover to see information
-                                </Text>
-                            }
-                            sections={[
-                                { value: (presentCount / 30) * 100, color: 'cyan', tooltip: `Present-${presentCount}` },
-                                { value: (absentCount / 30) * 100, color: 'orange', tooltip: `Absent-${absentCount}` },
-                                { value: (holidayCount / 30) * 100, color: 'grape', tooltip: `Holiday-${holidayCount}` },
-                            ]}
+        <div className='container'>
+
+            <div className="row">
+                <div className="col-md-12">
+                    <div className='d-flex justify-content-end align-items-center mb-2 flex-wrap mb-b-sm-1'>
+                        <Chip className='mx-2' color="violet" variant="filled" checked>Days {selected?.length}</Chip>
+                        <Chip className='mx-2' color="lime" variant="filled" checked>Present {presentCount}</Chip>
+                        <Chip className='mx-2' color="red" variant="filled" checked>Absent {absentCount}</Chip>
+                        <Chip className='mx-2' variant="filled" checked>Holiday {holidayCount}</Chip>
+                        <Menu shadow="md" width={200}>
+                            <Menu.Target>
+                                <Button variant="outline" color="lime" className='mx-2' radius="md">Action</Button>
+                            </Menu.Target>
+
+                            <Menu.Dropdown>
+
+                                <Menu.Label>Click on below options</Menu.Label>
+
+                                <Menu.Item icon={<IconClick size={14} />} onClick={async () => handleSelectAll()}>
+                                    Mark Full Month Attendance
+                                </Menu.Item>
+                                <Menu.Item icon={<IconTrash size={14} />} onClick={async () => ClearAttendanc()}>
+                                    Clear Attendance
+                                </Menu.Item>
+                                <Menu.Item icon={<IconDownload size={14} />} onClick={async () => handleExport(attendanceData)}>
+                                    Download
+                                </Menu.Item>
+                                <Link to="/AMS/how-to-use" style={{
+                                    textDecoration: "none", color: "black"
+                                }}>
+                                    <Menu.Item icon={<IconInfoCircle size={14} />}>
+                                        How to use
+                                    </Menu.Item>
+                                </Link>
+                            </Menu.Dropdown>
+                        </Menu>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row">
+
+                <div className="col-md-3">
+
+                    <div position="center" >
+                        <Calendar
+                            style={{ color: "white", background: prismColors.comment }}
+                            getDayProps={(date) => ({
+                                selected: selected.some((s) => dayjs(date).isSame(s, 'date')),
+                                onClick: () => handleSelect(date),
+                            })}
                         />
-                    </Group>
+                        <Group position="center">
+                            <RingProgress
+                                size={170}
+                                thickness={16}
+                                label={
+                                    <Text size="xs" align="center" px="xs" sx={{ pointerEvents: 'none' }}>
+                                        Hover to see information
+                                    </Text>
+                                }
+                                sections={[
+                                    { value: (presentCount / 30) * 100, color: 'cyan', tooltip: `Present-${presentCount}` },
+                                    { value: (absentCount / 30) * 100, color: 'orange', tooltip: `Absent-${absentCount}` },
+                                    { value: (holidayCount / 30) * 100, color: 'grape', tooltip: `Holiday-${holidayCount}` },
+                                ]}
+                            />
+                        </Group>
+                    </div>
                 </div>
 
+                <div className="col-md-9">
 
-                <div>
-                    <div className='d-flex justify-content-between align-items-center'>
-                        <Chip className='mx-2' color="violet" variant="filled" checked>Total days : {selected?.length}</Chip>
-                        <Chip className='mx-2' color="lime" variant="filled" checked>total present: {presentCount}</Chip>
-                        <Chip className='mx-2' color="red" variant="filled" checked>total absent: {absentCount}</Chip>
-                        <Chip className='mx-2' variant="filled" checked>total holiday: {holidayCount}</Chip>
-                        <Button variant="outline" className='mx-2' onClick={async () => handleExport(attendanceData)}>
-                            Download
-                        </Button>
-                        <Button variant="outline" color="red" className='mx-2' onClick={async () => handleSelectAll()}>
-                            Full Month Attendance</Button>
-                        <Button variant="outline" color="red" className='mx-2'
-                            onClick={async () => ClearAttendanc()}
-                        >
-                            Clear
-                        </Button>
+                    <div className='d-flex justify-content-around align-items-center' style={{ background: prismColors.comment }}>
 
-                        <Link to="/AMS/how-to-use">
-                            <Button variant="outline"  >
-                                How to use
-                            </Button>
-                        </Link>
+                        <label htmlFor="allPresent" className='d-flex justify-content-center align-items-center'>
+                            <Radio name="selectAll" id="allPresent" onClick={async () => handleSelectAllPresent()} className='mx-1' />
+                            Select All Present
+                        </label>
+
+                        <label htmlFor="allAbsent" className='d-flex justify-content-center align-items-center'>
+                            <Radio name="selectAll" id="allAbsent" onClick={async () => handleSelectAllAbsent()} className='mx-1' />
+                            Select All Absent
+                        </label>
+
+
+                        <label htmlFor="allHoliday" className='d-flex justify-content-center align-items-center'>
+                            <Radio name="selectAll" id="allHoliday" onClick={async () => handleSelectAllHoliday()} className='mx-1' />
+                            Select All Holiday
+                        </label>
+
                     </div>
 
-                    <div className='d-flex justify-content-between align-items-center mt-2 mb-4'>
+                    <div className='d-flex justify-content-between align-items-center mb-4'>
                         <Table withBorder className='text-center text-white' style={{ background: prismColors.comment }} >
                             <thead >
                                 <tr>
                                     <th className='text-center'>Date</th>
-                                    <th><Checkbox onClick={async () => handleSelectAllPresent()} />
-                                        Select All Present
-                                        {"  "}
-                                        <Checkbox onClick={async () => handleSelectAllAbsent()} />
-                                        Select All Absent
-                                        {"  "}
-                                        <Checkbox onClick={async () => handleSelectAllHoliday()} />
-                                        Select All Holiday
-                                    </th>
                                     <th className='text-center'>Action</th>
                                 </tr>
                             </thead>
@@ -340,8 +345,8 @@ function Hero(props) {
                         </Table>
 
                     </div>
-
                 </div>
+
             </div>
         </div>
     );
