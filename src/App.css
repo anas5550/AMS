@@ -1,3 +1,30 @@
+.table-container {
+    overflow-x: auto;
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 768px) {
+    .table-container {
+        width: 100%;
+        overflow-x: scroll;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .table-responsive {
+        display: block;
+    }
+
+    .react-calendar {
+        width: 100%;
+        max-width: 400px;
+        /* Adjust the max-width as needed */
+        margin: 0 auto;
+    }
+}
+
 @media screen and (max-width: 480px) {
     #logo, #head_easy_free_safe {
         font-size: 15px;
